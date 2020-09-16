@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TestTaskCK
 {
@@ -12,6 +13,7 @@ namespace TestTaskCK
         {
             var order = new Order();
             order.Order_id = orderId;
+            order.order_lines = new List<OrderLine>();
             return order;
         }
     }

@@ -17,8 +17,22 @@ namespace TestTaskCK.Mock
                 .Given(Request.Create().WithPath("/customerid")
                    )
                 .RespondWith(Response.Create()
-                    .WithBody(@"{""Customerid"":123}" )
+                    .WithBodyAsJson(new Customer().CustomerId = 123 )
+                );
+
+            server
+                .Given(Request.Create().WithPath("/customerid")
+                   )
+                .RespondWith(Response.Create()
+                    .WithBodyAsJson(new Customer().CustomerId = 123)
                 );
         }
+
+
+    }
+
+    class Customer
+    {
+        public int CustomerId { get; set; } 
     }
 }

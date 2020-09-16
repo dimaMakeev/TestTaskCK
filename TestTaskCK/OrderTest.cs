@@ -27,6 +27,7 @@ namespace TestTaskCK
             OL.product_id = "Existing Product";
             OL.quantity = 1;
             OL.total_amount = 100;
+            
             order.order_lines.Add(OL);
             app.PlaceOrder(order);
             //CheckOrderHasLineItem(order);

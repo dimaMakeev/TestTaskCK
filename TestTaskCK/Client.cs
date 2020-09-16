@@ -17,11 +17,15 @@ namespace TestTaskCK
 
         public int GetCustomerId()
         {
-            
+
+            int res; 
             var request = new RestRequest("/customerid");
             request.Method = Method.GET;
-            var responce = cl.Execute(request);
-            return 10;
+            var response = cl.Execute(request);
+            //dynamic json = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+            return Convert.ToInt32(response.Content);
+            
+           // return 10;
 
         }
 
@@ -31,12 +35,14 @@ namespace TestTaskCK
             request.Method = Method.POST;
             RequestBody rb = new RequestBody("json/text", "order", ord);
             request.Body = rb;
-            var responce = cl.Execute(request);
+            var response = cl.Execute(request);
         }
 
         public  Client()
         {
-            baseUrl = ConfigurationManager.AppSettings.Get("baseUrl");
+
+            var config = new TestConfig();
+            baseUrl = config.getBaseUrl();
         }
 
     }
