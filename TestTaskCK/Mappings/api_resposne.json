@@ -1,0 +1,12 @@
+
+
+
+{
+	"result": "error",
+	"http_status": 400,
+	"errors": [
+	{
+		"code": "101",
+		"message" : "Invalid order number, order does not exist"
+	}]
+}

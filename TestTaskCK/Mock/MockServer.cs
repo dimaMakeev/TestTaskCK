@@ -21,10 +21,10 @@ namespace TestTaskCK.Mock
                 );
 
             server
-                .Given(Request.Create().WithPath("/customerid")
+                .Given(Request.Create().WithPath("/placeorder")
                    )
                 .RespondWith(Response.Create()
-                    .WithBodyAsJson(new Customer().CustomerId = 123)
+                    .WithBodyFromFile("./Mappings/Success.json")
                 );
         }
 

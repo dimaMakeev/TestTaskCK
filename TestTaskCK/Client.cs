@@ -22,10 +22,7 @@ namespace TestTaskCK
             var request = new RestRequest("/customerid");
             request.Method = Method.GET;
             var response = cl.Execute(request);
-            //dynamic json = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
             return Convert.ToInt32(response.Content);
-            
-           // return 10;
 
         }
 
