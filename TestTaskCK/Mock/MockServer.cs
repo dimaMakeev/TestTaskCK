@@ -34,6 +34,13 @@ namespace TestTaskCK.Mock
                     .WithBodyFromFile("./Responses/NotExistedProduct.json")
                 );
 
+            server
+           .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.total_amount == 1000)]"))
+           )
+           .RespondWith(Response.Create()
+               .WithBodyFromFile("./Responses/IncorrectPrice.json")
+           );
+
         }
 
     }
