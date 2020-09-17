@@ -26,13 +26,13 @@ namespace TestTaskCK
 
         }
 
-        internal void PlaceOrder(string ord)
+        internal string PlaceOrder(string ord)
         {
             var request = new RestRequest("/placeorder");
             request.Method = Method.POST;
             RequestBody rb = new RequestBody("json/text", "order", ord);
             request.Body = rb;
-            var response = cl.Execute(request);
+            return cl.Execute(request).Content;
         }
 
         public  Client()

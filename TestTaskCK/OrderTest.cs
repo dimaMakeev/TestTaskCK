@@ -33,6 +33,26 @@ namespace TestTaskCK
             //CheckOrderHasLineItem(order);
         }
 
+        [Fact]
+        public void AddLineItemNotExistedProduct()
+        {
+            Aplication app = new Aplication();
+            Customer cr = new Customer();
+            TestData td = new TestData();
+            var OL = new OrderLine();
+
+            app.Login(cr);
+            var order = td.CreateOrder(12345, cr.CustomerId);
+
+            OL.product_id = "NotExistedProduct";
+            OL.quantity = 1;
+            OL.total_amount = 100;
+
+            order.order_lines.Add(OL);
+            app.PlaceOrder(order);
+            //CheckOrderHasLineItem(order);
+        }
+
         public void Dispose()
         {
             throw new NotImplementedException();

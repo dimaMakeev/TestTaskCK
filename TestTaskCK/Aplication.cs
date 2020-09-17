@@ -20,10 +20,10 @@ namespace TestTaskCK
             cr.CustomerId = client.GetCustomerId(); 
         }
 
-        public void PlaceOrder(Order order)
+        public string PlaceOrder(Order order)
         {
             string ord = JsonConvert.SerializeObject(order, Formatting.Indented);
-            client.PlaceOrder(ord);  
+            return client.PlaceOrder(ord);  
         }
     }
 }

@@ -17,17 +17,24 @@ namespace TestTaskCK.Mock
                 .Given(Request.Create().WithPath("/customerid")
                    )
                 .RespondWith(Response.Create()
-                    .WithBodyAsJson(new Customer().CustomerId = 123 )
+                    .WithBodyAsJson(new Customer().CustomerId = 123)
                 );
 
             server
-                .Given(Request.Create().WithPath("/placeorder")
-                   )
+                .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.product_id == 'Existing Product')]"))
+                )
                 .RespondWith(Response.Create()
                     .WithBodyFromFile("./Mappings/Success.json")
                 );
-        }
 
+            server
+                .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.product_id == 'NotExistedProduct')]"))
+                )
+                .RespondWith(Response.Create()
+                    .WithBodyFromFile("./Responses/NotExistedProduct.json")
+                );
+
+        }
 
     }
 
