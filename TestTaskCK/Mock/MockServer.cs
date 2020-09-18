@@ -10,9 +10,11 @@ namespace TestTaskCK.Mock
 {
     class MockServer
     {
+        WireMockServer server;
+
         public void CreateMock()
         {
-            var server = WireMockServer.Start(8081);
+            server = WireMockServer.Start(8081);
             server
                 .Given(Request.Create().WithPath("/customerid")
                    )
@@ -28,6 +30,21 @@ namespace TestTaskCK.Mock
                 );
 
             server
+                  .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.action == 'remove_line')]"))
+                     )
+                 .RespondWith(Response.Create()
+                 .WithBodyFromFile("./Mappings/Success.json")
+                 );
+
+            server
+               .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.action == 'upgrate_line')]"))
+                  )
+              .RespondWith(Response.Create()
+              .WithBodyFromFile("./Responses/InvalidAction.json")
+              );
+
+
+            server
                 .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.product_id == 'NotExistedProduct')]"))
                 )
                 .RespondWith(Response.Create()
@@ -40,6 +57,26 @@ namespace TestTaskCK.Mock
            .RespondWith(Response.Create()
                .WithBodyFromFile("./Responses/IncorrectPrice.json")
            );
+
+            server
+                .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.product_id == 'Mismatch Price')]"))
+                )
+            .RespondWith(Response.Create()
+            .WithBodyFromFile("./Responses/IncorrectPrice.json")
+                );
+
+
+            server
+    .Given(Request.Create().WithBody(new JsonPathMatcher("$..order_lines[?(@.product_id == 'Mismatch Order')]"))
+    )
+.RespondWith(Response.Create()
+.WithBodyFromFile("./Responses/MismatchOrder.json")
+    );
+        }
+
+        public void DeleteMock()
+        {
+            server.Stop();
 
         }
 

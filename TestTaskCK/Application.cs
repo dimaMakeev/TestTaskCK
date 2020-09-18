@@ -4,12 +4,12 @@ using System;
 
 namespace TestTaskCK
 {
-    internal class Aplication
+    internal class Application
     {
 
         Client client { get; set; }
 
-        public Aplication()
+        public Application()
         {
             client = new Client();
         }
@@ -20,10 +20,11 @@ namespace TestTaskCK
             cr.CustomerId = client.GetCustomerId(); 
         }
 
-        public string PlaceOrder(Order order)
+        public Responce PlaceOrder(Order order)
         {
             string ord = JsonConvert.SerializeObject(order, Formatting.Indented);
-            return client.PlaceOrder(ord);  
+            Responce resp = JsonConvert.DeserializeObject<Responce>(client.PlaceOrder(ord));
+            return resp;  
         }
     }
 }

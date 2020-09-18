@@ -11,6 +11,8 @@
     <None Remove="Mappings\api_resposne.json" />
     <None Remove="Mappings\Success.json" />
     <None Remove="Responses\IncorrectPrice.json" />
+    <None Remove="Responses\InvalidAction.json" />
+    <None Remove="Responses\MismatchOrder.json" />
     <None Remove="Responses\NotExistedProduct.json" />
   </ItemGroup>
 
@@ -34,6 +36,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Responses\IncorrectPrice.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Responses\InvalidAction.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Responses\MismatchOrder.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Responses\NotExistedProduct.json">

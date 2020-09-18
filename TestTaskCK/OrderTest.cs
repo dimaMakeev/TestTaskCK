@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TestTaskCK.Mock;
 using Xunit;
 
@@ -6,76 +7,148 @@ namespace TestTaskCK
 {
     public class OrderTest : IDisposable
     {
+        Application app; 
+        Customer customer; 
+        TestData testData;  
+        OrderLine orderLine;
+        MockServer mock;
 
         public OrderTest()
         {
-            var mock = new MockServer();
+          
+            mock = new MockServer();
             mock.CreateMock();
+            
+            app = new Application();
+            customer = new Customer();
+            testData = new TestData();
+            orderLine = new OrderLine();
         }
 
         [Fact]
         public void AddLineItem()
         {
-            Aplication app = new Aplication();
-            Customer cr = new Customer();
-            TestData td = new TestData();
-            var OL = new OrderLine();
 
-            app.Login(cr);
-            var order =  td.CreateOrder(12345, cr.CustomerId);
+            app.Login(customer);
+            var order =  testData.CreateOrder(12345, customer.CustomerId);
           
-            OL.product_id = "Existing Product";
-            OL.quantity = 1;
-            OL.total_amount = 100;
-            
-            order.order_lines.Add(OL);
-            var content = app.PlaceOrder(order);
-            //CheckOrderHasLineItem(order);
+            orderLine.product_id = "Existing Product";
+            orderLine.quantity = 1;
+            orderLine.total_amount = 100;
+            orderLine.action = "add_line";
+
+
+            order.order_lines.Add(orderLine);
+            var result = app.PlaceOrder(order);
+            Assert.Equal("success", result.result);
+            //here will be check in DB
+           
         }
 
         [Fact]
         public void AddLineItemNotExistedProduct()
         {
-            Aplication app = new Aplication();
-            Customer cr = new Customer();
-            TestData td = new TestData();
-            var OL = new OrderLine();
+            app.Login(customer);
+            var order = testData.CreateOrder(12345, customer.CustomerId);
 
-            app.Login(cr);
-            var order = td.CreateOrder(12345, cr.CustomerId);
+            orderLine.product_id = "NotExistedProduct";
+            orderLine.quantity = 1;
+            orderLine.total_amount = 100;
+            orderLine.action = "add_line";
 
-            OL.product_id = "NotExistedProduct";
-            OL.quantity = 1;
-            OL.total_amount = 100;
+            order.order_lines.Add(orderLine);
+            var result = app.PlaceOrder(order);
 
-            order.order_lines.Add(OL);
-            var content = app.PlaceOrder(order);
-            //CheckOrderHasLineItem(order);
+            Assert.Equal("error", result.result);
+             var error = result.errors[0];
+            Assert.Equal("Invalid Product ID", error.message);
+
         }
 
         [Fact]
         public void AddLineWithIncorectPrice()
         {
-            Aplication app = new Aplication();
-            Customer cr = new Customer();
-            TestData td = new TestData();
-            var OL = new OrderLine();
+        
+            app.Login(customer);
+            var order = testData.CreateOrder(12345, customer.CustomerId);
+            orderLine.product_id = "Wrong Price";
+            orderLine.quantity = 1;
+            orderLine.total_amount = 1000;
+            orderLine.action = "add_line";
+            order.order_lines.Add(orderLine);
 
-            app.Login(cr);
-            var order = td.CreateOrder(12345, cr.CustomerId);
+            var result = app.PlaceOrder(order);
 
-            OL.product_id = "Wrong Price";
-            OL.quantity = 1;
-            OL.total_amount = 1000;
+            Assert.Equal("error", result.result);
+            var error = result.errors[0];
+            Assert.Equal("Incorrect Price", error.message);
 
-            order.order_lines.Add(OL);
-            var content = app.PlaceOrder(order);
-            //CheckOrderHasLineItem(order);
         }
+
+        [Fact]
+        public void AddLineWithMismatchPrice()
+        {
+
+            app.Login(customer);
+            var order = testData.CreateOrder(12345, customer.CustomerId);
+            orderLine.product_id = "Mismatch Price";
+            orderLine.quantity = 1;
+            orderLine.total_amount = 1000;
+            orderLine.action = "add_line";
+            order.order_lines.Add(orderLine);
+
+            var result = app.PlaceOrder(order);
+
+            Assert.Equal("error", result.result);
+            var error = result.errors[0];
+            Assert.Equal("Incorrect Price", error.message);
+
+        }
+
+
+        [Fact]
+        public void RemoveLineItem()
+        {
+ 
+            app.Login(customer);
+            var order = testData.CreateOrder(12345, customer.CustomerId);
+            orderLine.product_id = "Remove Line";
+            orderLine.quantity = 1;
+            orderLine.total_amount = 1000;
+            orderLine.action = "remove_line";
+            order.order_lines.Add(orderLine);
+
+            var result = app.PlaceOrder(order);
+
+            Assert.Equal("success", result.result);
+            //here will be check in DB
+        }
+
+        [Fact]
+        public void InvalidAction()
+        {
+
+            app.Login(customer);
+            var order = testData.CreateOrder(12345, customer.CustomerId);
+            orderLine.product_id = "Invalid Action";
+            orderLine.quantity = 1;
+            orderLine.total_amount = 200;
+            orderLine.action = "upgrate_line";
+            order.order_lines.Add(orderLine);
+
+            var result = app.PlaceOrder(order);
+
+            Assert.Equal("error", result.result);
+            var error = result.errors[0];
+            Assert.Equal("Invalid Action", error.message);
+        }
+
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            mock.DeleteMock();
         }
+
+
     }
 }
